@@ -1,0 +1,66 @@
+clc;
+clear;
+
+image1 = double(imread('fog1.jpg'));
+image2 = double(imread('fog2.jpg'));
+
+% window size
+figure(1);
+
+subplot(4, 3, 1);
+imshow(uint8(image1));
+title('original image');
+
+% window_size = 3, 9, 15, 21, 27
+for window_size = 3:6:27
+    result1 = remove_haze(image1, window_size, 0.95);
+    subplot(4, 3, (window_size+3)/6+1);
+    imshow(uint8(result1));
+    title(sprintf('window_size=%d', window_size), 'Interpreter', 'none');
+end
+
+subplot(4, 3, 7);
+imshow(uint8(image2));
+title('original image');
+
+% window_size = 3, 9, 15, 21, 27
+for window_size = 3:6:27
+    result2 = remove_haze(image2, window_size, 0.95);
+    subplot(4, 3, (window_size+3)/6+7);
+    imshow(uint8(result2));
+    title(sprintf('window_size=%d', window_size), 'Interpreter', 'none');
+end
+
+saveas(gcf, 'window_size.jpg');
+
+% omega
+figure(2);
+
+subplot(4, 3, 1);
+imshow(uint8(image1));
+title('original image');
+
+% omega = 0.15, 0.35, 0.55, 0.75, 0.95
+for i = 1 : 5
+    omega = 0.15+(i-1)*0.2;
+    result1 = remove_haze(image1, 3, omega);
+    subplot(4, 3, i+1);
+    imshow(uint8(result1));
+    title(sprintf('omega=%.2f', omega), 'Interpreter', 'none');
+end
+
+subplot(4, 3, 7);
+imshow(uint8(image2));
+title('original image');
+
+% omega = 0.15, 0.35, 0.55, 0.75, 0.95
+for i = 1 : 5
+    omega = 0.15+(i-1)*0.2;
+    result2 = remove_haze(image2, 3, omega);
+    subplot(4, 3, i+7);
+    imshow(uint8(result2));
+    title(sprintf('omega=%.2f', omega), 'Interpreter', 'none');
+end
+
+saveas(gcf, 'omega.jpg');
+    

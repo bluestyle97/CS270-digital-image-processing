@@ -1,0 +1,25 @@
+function [radiance, dark_channel, dark_channel_filtered] = dehaze(image, window_size, omega)
+
+r = 15;
+res = 0.001;
+
+% get dark channel
+dark_channel = get_dark_channel(image, window_size);
+dark_channel_filtered = guided_filter(rgb2gray(image), dark_channel, r, res);
+
+% get atmosphere
+atmosphere = get_atmosphere(image, dark_channel_filtered);
+
+% get transmission estimate
+trans_est = get_transmission(image, atmosphere, window_size, omega);
+
+% apply guided filter
+filtered_image = guided_filter(rgb2gray(image), trans_est, r, res);
+filtered_dark_channel = get_dark_channel(filtered_image, window_size);
+[m, n, ~] = size(image);
+transmission = reshape(filtered_image, m, n);
+
+% get radiance
+radiance = get_radiance(image, atmosphere, transmission);
+
+end
